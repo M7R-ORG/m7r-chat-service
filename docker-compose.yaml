@@ -3,13 +3,15 @@ services:
     image: samarkinivan/chat-service:latest
     container_name: chat-service
     restart: on-failure
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       CONNECTIONSTRINGS__REDISCONNECTION: "chat-service-redis:6379"
       CONNECTIONSTRINGS__DBCONNECTION: "Data Source=chat-service-db,1433;Initial Catalog=ChatDB;User Id=sa;Password=SecretPassword161;TrustServerCertificate=True"
       COMMON__SECRETKEY: "secret_key_88002353535_161"
       CLIENT__BASEURL: "http://147.45.78.164:3000"
-      RMQ__HOSTNAME: "rabbitmq"
+      RMQ__HOSTNAME: "host.docker.internal"
       RMQ__USERNAME: "default_user"
       RMQ__PASSWORD: "default_password"
     ports:
@@ -17,8 +19,6 @@ services:
     depends_on:
       - chat-service-db
       - chat-service-redis
-    networks:
-      - app-network
     volumes:
       - ./.meta/server/uploads:/uploads
 
@@ -33,8 +33,6 @@ services:
       MSSQL_PID: Express
     ports:
       - "1435:1433"
-    networks:
-      - app-network
     volumes:
       - ./.meta/mssql/data:/var/opt/mssql/data
       - ./.meta/mssql/log:/var/opt/mssql/log
@@ -50,12 +48,6 @@ services:
       REDIS_PASSWORD: "password"
       REDIS_PORT: 6379
       REDIS_DATABASES: 16
-    networks:
-      - app-network
     volumes:
       - ./.meta/redis/data:/root/redis
       - ./.meta/redis/conf:/usr/local/etc/redis/redis.conf
-
-networks:
-  app-network:
-    external: true
