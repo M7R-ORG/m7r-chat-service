@@ -8,7 +8,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       CONNECTIONSTRINGS__REDISCONNECTION: "chat-service-redis:6379"
-      CONNECTIONSTRINGS__DBCONNECTION: "Data Source=chat-service-db,1433;Initial Catalog=ChatDB;User Id=sa;Password=SecretPassword161;TrustServerCertificate=True"
+      CONNECTIONSTRINGS__DBCONNECTION: "Host=chat-service-db;Database=ChatDB;Username=postgres;Password=SecretPassword161"
       COMMON__SECRETKEY: "secret_key_88002353535_161"
       CLIENT__BASEURL: "http://147.45.78.164:3000"
       RMQ__HOSTNAME: "host.docker.internal"
@@ -23,20 +23,17 @@ services:
       - ./.meta/server/uploads:/uploads
 
   chat-service-db:
-    image: mcr.microsoft.com/mssql/server:latest
+    image: postgres:17
     container_name: chat-service-db
     restart: on-failure
-    user: root
     environment:
-      ACCEPT_EULA: Y
-      MSSQL_SA_PASSWORD: SecretPassword161
-      MSSQL_PID: Express
+      POSTGRES_DB: ChatDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: SecretPassword161
     ports:
-      - "1435:1433"
+      - "5433:5432"
     volumes:
-      - ./.meta/mssql/data:/var/opt/mssql/data
-      - ./.meta/mssql/log:/var/opt/mssql/log
-      - ./.meta/mssql/secrets:/var/opt/mssql/secrets
+      - ./.meta/postgres/data:/var/lib/postgresql/data
 
   chat-service-redis:
     image: redis:latest

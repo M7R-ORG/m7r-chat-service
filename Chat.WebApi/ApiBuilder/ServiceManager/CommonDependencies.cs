@@ -20,7 +20,7 @@ public static partial class ServiceManagerExtension
         string? redisConnection = AppEnvironment.GetRedisConnectionString(config);
 
         serviceCollection.AddOptions();
-        serviceCollection.AddDbContext<EFContext>(options => options.UseSqlServer(dbConnection));
+        serviceCollection.AddDbContext<EFContext>(options => options.UseNpgsql(dbConnection));
         serviceCollection.AddControllers();
         serviceCollection.AddEndpointsApiExplorer();
         serviceCollection.AddHttpContextAccessor();
