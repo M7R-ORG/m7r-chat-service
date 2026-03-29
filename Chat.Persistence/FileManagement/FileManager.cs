@@ -8,7 +8,7 @@ public static class FileManager
         string fileName
     )
     {
-        string fullName = $"{Guid.NewGuid()}.{fileName}.{DateTime.Now:ddMMyyyy.HHmm}";
+        string fullName = $"{Guid.NewGuid()}.{fileName}.{DateTime.UtcNow:ddMMyyyy.HHmm}";
         string fullPath = $"{path}/{fullName}";
 
         if (file == null || file.Length <= 0)
