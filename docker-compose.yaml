@@ -5,15 +5,7 @@ services:
     restart: on-failure
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      CONNECTIONSTRINGS__REDISCONNECTION: "chat-service-redis:6379"
-      CONNECTIONSTRINGS__DBCONNECTION: "Host=chat-service-db;Database=ChatDB;Username=postgres;Password=SecretPassword161"
-      COMMON__SECRETKEY: "secret_key_88002353535_161"
-      CLIENT__BASEURL: "http://147.45.78.164:3000"
-      RMQ__HOSTNAME: "host.docker.internal"
-      RMQ__USERNAME: "default_user"
-      RMQ__PASSWORD: "default_password"
+    env_file: .env
     ports:
       - "8083:8080"
     depends_on:
@@ -26,10 +18,7 @@ services:
     image: postgres:17
     container_name: chat-service-db
     restart: on-failure
-    environment:
-      POSTGRES_DB: ChatDB
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: SecretPassword161
+    env_file: .env
     ports:
       - "5433:5432"
     volumes:
@@ -39,12 +28,9 @@ services:
     image: redis:latest
     container_name: chat-service-redis
     restart: on-failure
+    env_file: .env
     ports:
       - "6379:6379"
-    environment:
-      REDIS_PASSWORD: "password"
-      REDIS_PORT: 6379
-      REDIS_DATABASES: 16
     volumes:
       - ./.meta/redis/data:/root/redis
       - ./.meta/redis/conf:/usr/local/etc/redis/redis.conf
