@@ -42,7 +42,7 @@ public partial class Channel : IAggregateRoot
 
     public void UpdateLastActivity()
     {
-        LastActivity = DateTime.Now;
+        LastActivity = DateTime.UtcNow;
     }
 
     public void UpdateImage(string? image)

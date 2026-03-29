@@ -5,6 +5,7 @@ using Chat.WebApi.Common;
 
 AppEnvironment.LoadEnvironments();
 
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 ConfigurationManager config = builder.Configuration;

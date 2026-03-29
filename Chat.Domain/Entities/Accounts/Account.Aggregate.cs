@@ -13,7 +13,7 @@ public partial class Account : IAggregateRoot
     public void UpdateActivityStatus(string activityStatus)
     {
         ActivityStatus = activityStatus;
-        LastOnlineAt = DateTime.Now;
+        LastOnlineAt = DateTime.UtcNow;
     }
 
     public void UpdateImage(string? image)

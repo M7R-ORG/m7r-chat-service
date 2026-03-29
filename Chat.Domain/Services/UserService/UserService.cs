@@ -49,7 +49,7 @@ public class UserBS : DomainService
 
     public async Task ConfirmRegistrationAsync(Confirmation confirmation)
     {
-        if (confirmation.ExpirationDate < DateTime.Now)
+        if (confirmation.ExpirationDate < DateTime.UtcNow)
             throw new OperationNotAllowedException("Confirmation has expired");
 
         if (await _unitOfWork.Account.AnyAsync(account => account.Email == confirmation.Email))

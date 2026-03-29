@@ -57,7 +57,7 @@ public class UserService : BaseService, IUserService
                 Email = request.Email,
                 Password = request.Password,
                 Birthday = request.Birthday,
-                ExpirationDate = DateTime.Now.AddHours(1)
+                ExpirationDate = DateTime.UtcNow.AddHours(1)
             }
         );
 
