@@ -6,5 +6,5 @@ public class FilePathSettings : ISettings
 
     public string Image { get; set; } = null!;
     public string File { get; set; } = null!;
-    public string Logger { get; set; } = null!;
+
 }
