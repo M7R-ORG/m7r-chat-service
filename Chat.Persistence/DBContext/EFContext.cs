@@ -25,9 +25,6 @@ public class EFContext : DbContext, IDataProtectionKeyContext
     public EFContext(DbContextOptions<EFContext> options)
         : base(options)
     {
-        // Database.EnsureDeleted();
-        // Database.EnsureCreated();
-        Database.Migrate();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
