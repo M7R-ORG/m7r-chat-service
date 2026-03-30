@@ -1,3 +1,11 @@
-﻿namespace Chat.Domain.Entities.Messages;
+﻿using Chat.Domain.Shared.Models;
 
-public interface IMessageRepository : IAsyncRepository<Message> { }
+namespace Chat.Domain.Entities.Messages;
+
+public interface IMessageRepository : IAsyncRepository<Message>
+{
+    Task<Dictionary<int, ChannelSummary>> GetChannelSummariesAsync(
+        IEnumerable<int> channelIds,
+        int accountId
+    );
+}
