@@ -116,9 +116,16 @@ public class ChannelService : BaseService, IChannelService
             request.Pagination
         );
 
+        IEnumerable<int> channelIds = paginatedData.Collection.Select(channel => channel.Id);
+        Dictionary<int, ChannelSummary> summaries = await _unitOfWork.Message.GetChannelSummariesAsync(channelIds, AccountId);
+
         var adaptedChannels = paginatedData
             .Collection
-            .Select(channel => new ChannelServiceAccountChannelListAdapter(channel, AccountId))
+            .Select(channel => new ChannelServiceAccountChannelListAdapter(
+                channel,
+                AccountId,
+                summaries.GetValueOrDefault(channel.Id)
+            ))
             .ToList();
 
         await Task.WhenAll(adaptedChannels.Select(channel => channel.LoadImageAsync()));

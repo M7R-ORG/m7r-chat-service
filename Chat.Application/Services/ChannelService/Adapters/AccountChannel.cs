@@ -3,6 +3,7 @@ using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Entities.Messages;
 using Chat.Domain.Shared.Constants.Common;
+using Chat.Domain.Shared.Models;
 using Chat.Persistence.Extensions;
 
 namespace Chat.Application.Services.ChatService.Adapters;
@@ -11,25 +12,26 @@ public class ChannelServiceAccountChannelListAdapter : ChannelServiceAccountChan
 {
     private readonly string? _imagePath;
 
-    public ChannelServiceAccountChannelListAdapter(Channel channel, int authorId)
+    public ChannelServiceAccountChannelListAdapter(
+        Channel channel,
+        int authorId,
+        ChannelSummary? summary
+    )
     {
         Id = channel.Id;
         Type = channel.Type;
         LastActivity = channel.LastActivity;
-        UnreadMessagesCount = channel.GetUnreadMessagesCount(authorId);
+        UnreadMessagesCount = summary?.UnreadMessagesCount ?? 0;
 
-        Message? lastMessage = channel.GetLastMessage();
-
-        if (lastMessage != null)
+        if (summary is { LastMessageText: not null } or { LastMessageAttachmentsCount: > 0 })
         {
-            int attachmentsCount = lastMessage.Attachments.Count;
-            string lastMessageContent = string.IsNullOrEmpty(lastMessage.Text)
-                ? $"{attachmentsCount} attachments"
-                : lastMessage.Text;
+            string lastMessageContent = string.IsNullOrEmpty(summary!.LastMessageText)
+                ? $"{summary.LastMessageAttachmentsCount} attachments"
+                : summary.LastMessageText;
 
             LastMessage = new ChannelServiceLastMessageResponseData()
             {
-                Author = lastMessage.Author?.Login,
+                Author = summary.LastMessageAuthor,
                 Content = lastMessageContent,
             };
         }
