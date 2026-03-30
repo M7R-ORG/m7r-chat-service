@@ -10,6 +10,7 @@ using Chat.Domain.Exceptions;
 using Chat.Domain.Services;
 using Chat.Domain.Services.ChatService;
 using Chat.Domain.Shared.Constants.Common;
+using Chat.Domain.Shared.Models;
 using Chat.Infrastructure.Services.AIService;
 using Chat.Infrastructure.Services.AIService.Models;
 using Chat.Persistence.Extensions;
@@ -40,12 +41,11 @@ public class ChatService : BaseService, IChatService
 
     public async Task<ChatServiceMessagesResponse> MessagesAsync(ChatServiceMessagesRequest request)
     {
-        IEnumerable<Message> messages = await _chatBS.MessagesAsync(
+        PaginatorResponse<Message> paginatedData = await _chatBS.MessagesPaginatedAsync(
             request.ChannelId,
-            request.SearchField
+            request.SearchField,
+            request.Pagination
         );
-
-        PaginatorResponse<Message> paginatedData = messages.Pagination(request.Pagination);
 
         IEnumerable<ChatServiceMessageAdapter> adaptedMessages = paginatedData
             .Collection

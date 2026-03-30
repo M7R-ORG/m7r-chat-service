@@ -7,6 +7,7 @@ using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Accounts.Users;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Services.AccountService;
+using Chat.Domain.Shared.Models;
 using Chat.Persistence.Extensions;
 using Microsoft.AspNetCore.Http;
 
@@ -74,12 +75,11 @@ public class AccountService : BaseService, IAccountService
         AccountServiceAccountsRequest request
     )
     {
-        IEnumerable<Account> accounts = await _accountBS.GetAccountsAsync(
+        PaginatorResponse<Account> paginatedData = await _accountBS.GetAccountsPaginatedAsync(
             AccountId,
-            request.SearchField
+            request.SearchField,
+            request.Pagination
         );
-
-        PaginatorResponse<Account> paginatedData = accounts.Pagination(request.Pagination);
 
         var adaptedAccounts = paginatedData
             .Collection

@@ -5,6 +5,7 @@ using Chat.Domain.Entities.Attachments;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Entities.Messages;
 using Chat.Domain.Exceptions;
+using Chat.Domain.Shared.Models;
 
 namespace Chat.Domain.Services.ChatService;
 
@@ -35,6 +36,18 @@ public class ChatBS : DomainService
             throw new NotExistsException("Messages not exists");
 
         return messages;
+    }
+
+    public async Task<PaginatorResponse<Message>> MessagesPaginatedAsync(
+        int channelId,
+        string? searchField,
+        Pagination? pagination
+    )
+    {
+        return await _unitOfWork.Message.GetPaginatedAsync(
+            new MessagesSpec(channelId, searchField),
+            pagination
+        );
     }
 
     public async Task<Message> MessageAsync(int channelId, int messageId)

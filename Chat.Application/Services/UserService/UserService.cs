@@ -112,9 +112,9 @@ public class UserService : BaseService, IUserService
 
     public async Task<UserServiceUsersResponse> UsersAsync(UserServiceUsersRequest request)
     {
-        IEnumerable<User> users = await _userBS.GetUsersAsync();
-
-        PaginatorResponse<User> paginatedData = users.Pagination(request.Pagination);
+        PaginatorResponse<User> paginatedData = await _userBS.GetUsersPaginatedAsync(
+            request.Pagination
+        );
 
         var adaptedUsers = paginatedData
             .Collection

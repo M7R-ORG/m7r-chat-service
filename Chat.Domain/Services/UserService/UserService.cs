@@ -3,6 +3,7 @@ using Chat.Domain.Entities.Accounts.Users;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Services.AuthService;
 using Chat.Domain.Shared.Models;
+using Chat.Domain.Specification;
 
 namespace Chat.Domain.Services.UserService;
 
@@ -19,6 +20,14 @@ public class UserBS : DomainService
     public async Task<IEnumerable<User>> GetUsersAsync()
     {
         return await _unitOfWork.User.GetAllAsync() ?? throw new NotExistsException("Users");
+    }
+
+    public async Task<PaginatorResponse<User>> GetUsersPaginatedAsync(Pagination? pagination)
+    {
+        return await _unitOfWork.User.GetPaginatedAsync(
+            new DefaultSpec<User>(),
+            pagination
+        );
     }
 
     public async Task CheckExistenceByEmailAsync(string email)

@@ -49,4 +49,16 @@ public class AccountBS : DomainService
         return await _unitOfWork.Account.GetAllAsync(new AccountsSpec(accountId, searchField))
             ?? throw new NotExistsException("Accounts");
     }
+
+    public async Task<PaginatorResponse<Account>> GetAccountsPaginatedAsync(
+        int accountId,
+        string? searchField,
+        Pagination? pagination
+    )
+    {
+        return await _unitOfWork.Account.GetPaginatedAsync(
+            new AccountsSpec(accountId, searchField),
+            pagination
+        );
+    }
 }
