@@ -4,6 +4,7 @@ using Chat.Domain.Entities.Accounts.AIBots;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Shared.Constants.Common;
+using Chat.Domain.Shared.Models;
 using Chat.Domain.Specification;
 
 namespace Chat.Domain.Services.ChannelService;
@@ -193,6 +194,17 @@ public class ChannelBS : DomainService
         return channels;
     }
 
+    public async Task<PaginatorResponse<Channel>> PublicChannelsPaginatedAsync(
+        string? searchField,
+        Pagination? pagination
+    )
+    {
+        return await _unitOfWork.Channel.GetPaginatedAsync(
+            new PublicChannelsSpec(searchField),
+            pagination
+        );
+    }
+
     public async Task<IEnumerable<Channel>> AccountChannelsAsync(
         int accountId,
         string? searchField,
@@ -207,6 +219,19 @@ public class ChannelBS : DomainService
             throw new NotExistsException("Channels not exists");
 
         return channels;
+    }
+
+    public async Task<PaginatorResponse<Channel>> AccountChannelsPaginatedAsync(
+        int accountId,
+        string? searchField,
+        string? channelType,
+        Pagination? pagination
+    )
+    {
+        return await _unitOfWork.Channel.GetPaginatedAsync(
+            new AccountChannelsSpec(accountId, searchField, channelType),
+            pagination
+        );
     }
 
     public async Task<Channel> AccountChannelAsync(int accountId, int channelId)

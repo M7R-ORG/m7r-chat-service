@@ -6,6 +6,7 @@ using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Services.ChannelService;
+using Chat.Domain.Shared.Models;
 using Chat.Persistence.Extensions;
 using Microsoft.AspNetCore.Http;
 
@@ -85,9 +86,10 @@ public class ChannelService : BaseService, IChannelService
         ChannelServicePublicChannelsRequest request
     )
     {
-        IEnumerable<Channel> channels = await _channelBS.PublicChannelsAsync(request.SearchField);
-
-        PaginatorResponse<Channel> paginatedData = channels.Pagination(request.Pagination);
+        PaginatorResponse<Channel> paginatedData = await _channelBS.PublicChannelsPaginatedAsync(
+            request.SearchField,
+            request.Pagination
+        );
 
         var adaptedChannels = paginatedData
             .Collection
@@ -107,13 +109,12 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceAccountChannelsRequest request
     )
     {
-        IEnumerable<Channel> channels = await _channelBS.AccountChannelsAsync(
+        PaginatorResponse<Channel> paginatedData = await _channelBS.AccountChannelsPaginatedAsync(
             AccountId,
             request.SearchField,
-            request.ChannelType
+            request.ChannelType,
+            request.Pagination
         );
-
-        PaginatorResponse<Channel> paginatedData = channels.Pagination(request.Pagination);
 
         var adaptedChannels = paginatedData
             .Collection

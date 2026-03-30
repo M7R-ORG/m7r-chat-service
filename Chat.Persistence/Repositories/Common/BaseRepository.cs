@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Chat.Domain.Entities;
+using Chat.Domain.Shared.Models;
 using Chat.Domain.Specification;
 using Chat.Persistence.DBContext;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,35 @@ public class BaseRepository<TEntity> : IAsyncRepository<TEntity>
     )
     {
         return await _dbSet.GetQueryForManyAsync(specification ?? new DefaultSpec<TEntity>());
+    }
+
+    public virtual async Task<PaginatorResponse<TEntity>> GetPaginatedAsync(
+        ISpecification<TEntity> specification,
+        Pagination? pagination
+    )
+    {
+        IQueryable<TEntity> query = await _dbSet.GetQueryForManyAsync(specification);
+
+        int itemCount = await query.CountAsync();
+
+        int skip = pagination?.Skip ?? 0;
+        int pageSize = pagination?.PageSize ?? itemCount;
+        int pageNumber = pagination?.PageNumber ?? 0;
+        int pagesCount = pageSize > 0 ? (int)Math.Ceiling((float)itemCount / pageSize) : 0;
+
+        List<TEntity> collection = pagination != null
+            ? await query.Skip(pageNumber * pageSize + skip).Take(pageSize).ToListAsync()
+            : await query.ToListAsync();
+
+        var meta = new MetaResponse
+        {
+            ItemsCount = itemCount,
+            PagesCount = pagesCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        return new PaginatorResponse<TEntity>(collection, meta);
     }
 
     public virtual async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)
