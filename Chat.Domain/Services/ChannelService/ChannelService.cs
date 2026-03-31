@@ -1,4 +1,5 @@
-﻿using Chat.Domain.Common;
+﻿using System.Data;
+using Chat.Domain.Common;
 using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Accounts.AIBots;
 using Chat.Domain.Entities.Channels;
@@ -21,6 +22,10 @@ public class ChannelBS : DomainService
         int? aiProfileId = null
     )
     {
+        await using ITransaction transaction = await _unitOfWork.BeginTransactionAsync(
+            IsolationLevel.Serializable
+        );
+
         ISingleSpecification<Account> specification =
             aiProfileId == null
                 ? new AccountByIdSpec(secondAccountId, true)
@@ -67,6 +72,7 @@ public class ChannelBS : DomainService
 
         await _unitOfWork.Channel.AddAsync(channel);
         await _unitOfWork.SaveChangesAsync();
+        await transaction.CommitAsync();
 
         return channel;
     }
