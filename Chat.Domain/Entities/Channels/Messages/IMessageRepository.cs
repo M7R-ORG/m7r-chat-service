@@ -8,4 +8,10 @@ public interface IMessageRepository : IAsyncRepository<Message>
         IEnumerable<int> channelIds,
         int accountId
     );
+
+    Task<List<int>> BatchReadMessagesAsync(
+        int channelId,
+        int lastMessageId,
+        int accountId
+    );
 }
