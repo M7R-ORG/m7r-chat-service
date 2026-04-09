@@ -130,7 +130,7 @@ public class ChatService : BaseService, IChatService
     {
         int accountId = request.IsAIBot ? await _chatBS.GetAIBotId() : AccountId;
 
-        IEnumerable<Message> readMessages = await _chatBS.ReadMessagesAsync(
+        List<int> readMessageIds = await _chatBS.ReadMessagesAsync(
             request.ChannelId,
             request.MessageId,
             accountId
@@ -148,7 +148,7 @@ public class ChatService : BaseService, IChatService
 
         return new ChatServiceReadMessageResponse()
         {
-            ReadMessageIds = readMessages.Select(message => message.Id),
+            ReadMessageIds = readMessageIds,
             UserIds = userIds,
             UnreadMessagesCount = unreadMessagesCount
         };
