@@ -10,7 +10,7 @@ internal class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
     {
         builder.HasIndex(attachment => attachment.UniqueId).IsUnique();
         builder.Property(attachment => attachment.UniqueId).IsRequired();
-        builder.Property(attachment => attachment.Content).IsRequired();
+        builder.Property(attachment => attachment.FileId).IsRequired();
         builder.HasIndex(attachment => attachment.Type);
         builder.Property(attachment => attachment.Type).IsRequired();
         builder.Property(attachment => attachment.Name).IsRequired();

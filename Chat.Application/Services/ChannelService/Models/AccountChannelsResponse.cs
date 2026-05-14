@@ -14,7 +14,7 @@ public class ChannelServiceAccountChannelResponseData
     public string? Name { get; set; }
     public string? Type { get; set; }
     public DateTime LastActivity { get; set; }
-    public byte[]? Image { get; set; }
+    public string? ImageId { get; set; }
     public ChannelServiceLastMessageResponseData? LastMessage { get; set; }
     public int UnreadMessagesCount { get; set; }
 }

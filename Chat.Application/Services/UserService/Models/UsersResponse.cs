@@ -10,7 +10,7 @@ public class UserServiceUserResponseData
     public string? Role { get; set; }
     public bool IsBanned { get; set; }
     public string? ActivityStatus { get; set; }
-    public byte[]? Image { get; set; }
+    public string? ImageId { get; set; }
     public DateOnly? Birthday { get; set; }
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

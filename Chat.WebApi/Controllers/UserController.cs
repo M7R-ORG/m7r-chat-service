@@ -75,24 +75,17 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetUsers([FromQuery] UserControllerUsersRequest request)
     {
         UserServiceUsersResponse response = await _userService.UsersAsync(
-            new UserServiceUsersRequest()
-            {
-                Pagination = request.Pagination,
-                IsLoadImage = request.IsLoadImage
-            }
+            new UserServiceUsersRequest() { Pagination = request.Pagination }
         );
 
         return Ok(response);
     }
 
     [HttpGet("users/{id:int}"), Authorize(Policy = AuthPolicy.OnlyAdmin)]
-    public async Task<IActionResult> GetUser(
-        [FromQuery] UserControllerUserRequest request,
-        [FromRoute] int id
-    )
+    public async Task<IActionResult> GetUser([FromRoute] int id)
     {
         UserServiceUserResponse response = await _userService.UserAsync(
-            new UserServiceUserRequest() { Id = id, IsLoadImage = request.IsLoadImage }
+            new UserServiceUserRequest() { Id = id }
         );
 
         return Ok(response);

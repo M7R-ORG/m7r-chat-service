@@ -8,7 +8,6 @@ using Chat.Domain.Entities.Accounts.Users;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Services.AccountService;
 using Chat.Domain.Shared.Models;
-using Chat.Persistence.Extensions;
 using Microsoft.AspNetCore.Http;
 
 namespace Chat.Application.Services.AccountService;
@@ -44,7 +43,7 @@ public class AccountService : BaseService, IAccountService
 
         await _accountBS.UpdateImageAsync(account, fullPath);
 
-        return new AccountServiceUploadImageResponse() { Image = request.Image };
+        return new AccountServiceUploadImageResponse() { ImageId = fullPath };
     }
 
     public async Task<AccountServiceImageResponse> GetImageAsync()
@@ -53,9 +52,7 @@ public class AccountService : BaseService, IAccountService
             await _accountBS.GetAccountByIdAsync(AccountId)
             ?? throw new NotExistsException("Account not found");
 
-        byte[]? image = await FileManager.ReadToBytesAsync(account.Image);
-
-        return new AccountServiceImageResponse() { Image = image };
+        return new AccountServiceImageResponse() { ImageId = account.Image };
     }
 
     public async Task<AccountServiceUpdateStatusResponse> UpdateStatusAsync(
@@ -85,9 +82,6 @@ public class AccountService : BaseService, IAccountService
             .Collection
             .Select(account => new AccountServiceAccountAdapter(account))
             .ToList();
-
-        if (request.IsLoadImage)
-            await Task.WhenAll(adaptedAccounts.Select(account => account.LoadImageAsync()));
 
         return new AccountServiceAccountsResponse()
         {
@@ -119,9 +113,7 @@ public class AccountService : BaseService, IAccountService
             await _accountBS.GetAccountByIdAsync(request.AccountId)
             ?? throw new NotExistsException("Account not found");
 
-        byte[]? image = await FileManager.ReadToBytesAsync(account.Image);
-
-        return new AccountServiceAccountImageResponse() { Image = image };
+        return new AccountServiceAccountImageResponse() { ImageId = account.Image };
     }
 
     public async Task<AccountServiceAccountByIdResponse> GetExtendedAccountByIdAsync(

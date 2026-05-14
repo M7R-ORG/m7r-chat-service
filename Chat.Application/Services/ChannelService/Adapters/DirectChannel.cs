@@ -2,12 +2,9 @@
 using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Entities.Messages;
-using Chat.Persistence.Extensions;
 
 public class ChannelServiceDirectChannelAdapter : ChannelServiceDirectChannel
 {
-    private readonly string? _imagePath;
-
     public ChannelServiceDirectChannelAdapter(Channel channel, int authorId)
     {
         Id = channel.Id;
@@ -29,15 +26,10 @@ public class ChannelServiceDirectChannelAdapter : ChannelServiceDirectChannel
 
         if (chatPartner != null)
         {
-            _imagePath = chatPartner.Image;
+            ImageId = chatPartner.Image;
             Name = channel.Name ?? chatPartner.Login;
             UserActivityStatus = chatPartner.ActivityStatus;
             UserLastOnlineAt = chatPartner.LastOnlineAt;
         }
-    }
-
-    public async Task LoadImageAsync()
-    {
-        Image = await FileManager.ReadToBytesAsync(_imagePath);
     }
 }

@@ -9,7 +9,6 @@ using Chat.Domain.Services.UserService;
 using Chat.Domain.Shared.Models;
 using Chat.Infrastructure.Services.NotificationsService;
 using Chat.Infrastructure.Services.NotificationsService.Models;
-using Chat.Persistence.Extensions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 
@@ -121,9 +120,6 @@ public class UserService : BaseService, IUserService
             .Select(user => new UserServiceUserAdapter(user))
             .ToList();
 
-        if (request.IsLoadImage)
-            await Task.WhenAll(adaptedUsers.Select(user => user.LoadImageAsync()));
-
         return new UserServiceUsersResponse() { Meta = paginatedData.Meta, Users = adaptedUsers };
     }
 
@@ -133,15 +129,13 @@ public class UserService : BaseService, IUserService
             await _userBS.GetUserByIdAsync(request.Id)
             ?? throw new NotExistsException("User not exists");
 
-        byte[]? image = request.IsLoadImage ? await FileManager.ReadToBytesAsync(user.Image) : null;
-
         return new UserServiceUserResponse()
         {
             Id = user.Id,
             Login = user.Login,
             Email = user.Email,
             Role = user.Role,
-            Image = image,
+            ImageId = user.Image,
             Birthday = user.Birthday,
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt

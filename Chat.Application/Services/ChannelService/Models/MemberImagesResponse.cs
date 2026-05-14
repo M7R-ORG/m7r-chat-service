@@ -3,7 +3,7 @@
 public class ChannelServiceMemberImageResponseData
 {
     public int Id { get; set; }
-    public byte[]? Image { get; set; }
+    public string? ImageId { get; set; }
 }
 
 public class ChannelServiceMemberImagesResponse

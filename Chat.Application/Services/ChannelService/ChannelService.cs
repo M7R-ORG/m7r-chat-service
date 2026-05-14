@@ -2,12 +2,10 @@
 using Chat.Application.Services.ChatService.Adapters;
 using Chat.Application.Services.Common;
 using Chat.Domain.Common;
-using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Services.ChannelService;
 using Chat.Domain.Shared.Models;
-using Chat.Persistence.Extensions;
 using Microsoft.AspNetCore.Http;
 
 namespace Chat.Application.Services.ChannelService;
@@ -96,8 +94,6 @@ public class ChannelService : BaseService, IChannelService
             .Select(channel => new ChannelServicePublicChannelAdapter(channel, AccountId))
             .ToList();
 
-        await Task.WhenAll(adaptedChannels.Select(channel => channel.LoadImageAsync()));
-
         return new ChannelServicePublicChannelsResponse()
         {
             Meta = paginatedData.Meta,
@@ -128,8 +124,6 @@ public class ChannelService : BaseService, IChannelService
             ))
             .ToList();
 
-        await Task.WhenAll(adaptedChannels.Select(channel => channel.LoadImageAsync()));
-
         return new ChannelServiceAccountChannelsResponse()
         {
             Meta = paginatedData.Meta,
@@ -144,8 +138,6 @@ public class ChannelService : BaseService, IChannelService
         Channel channel = await _channelBS.AccountChannelAsync(AccountId, request.Id);
 
         var adaptedChannel = new ChannelServiceAccountChannelAdapter(channel, AccountId);
-
-        await adaptedChannel.LoadImageAsync();
 
         return adaptedChannel;
     }
@@ -186,8 +178,6 @@ public class ChannelService : BaseService, IChannelService
 
         var adaptedChannel = new ChannelServiceDirectChannelAdapter(directChannel, AccountId);
 
-        await adaptedChannel.LoadImageAsync();
-
         return new ChannelServiceSetUpDirectChannelResponse()
         {
             DirectChannel = adaptedChannel,
@@ -202,21 +192,13 @@ public class ChannelService : BaseService, IChannelService
     {
         Channel channel = await _channelBS.AccountChannelAsync(AccountId, request.ChannelId);
 
-        ICollection<Account> accounts = channel.Accounts;
-
-        IEnumerable<Task<ChannelServiceMemberImageResponseData>> memberImageTasks = accounts.Select(
-            async (account) =>
+        IEnumerable<ChannelServiceMemberImageResponseData> memberImages = channel
+            .Accounts
+            .Select(account => new ChannelServiceMemberImageResponseData()
             {
-                byte[]? image = await FileManager.ReadToBytesAsync(account.Image);
-                return new ChannelServiceMemberImageResponseData()
-                {
-                    Id = account.Id,
-                    Image = image
-                };
-            }
-        );
-
-        ChannelServiceMemberImageResponseData[] memberImages = await Task.WhenAll(memberImageTasks);
+                Id = account.Id,
+                ImageId = account.Image
+            });
 
         return new ChannelServiceMemberImagesResponse() { MemberImages = memberImages };
     }

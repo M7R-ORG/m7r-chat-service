@@ -6,7 +6,7 @@ public class ChannelServiceDirectChannel
     public string? Name { get; set; }
     public string? Type { get; set; }
     public DateTime LastActivity { get; set; }
-    public byte[]? Image { get; set; }
+    public string? ImageId { get; set; }
     public string? UserActivityStatus { get; set; }
     public DateTime? UserLastOnlineAt { get; set; }
     public int? MembersCount { get; set; }

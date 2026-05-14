@@ -2,5 +2,5 @@
 
 public class AccountServiceAccountImageResponse
 {
-    public byte[]? Image { get; set; }
+    public string? ImageId { get; set; }
 }
