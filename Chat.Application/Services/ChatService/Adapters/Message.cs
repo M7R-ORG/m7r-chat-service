@@ -23,6 +23,7 @@ public class ChatServiceMessageAdapter : ChatServiceMessageResponseData
                     new ChatServiceLoadAttachmentResponse()
                     {
                         Id = attachment.Id,
+                        FileId = attachment.FileId,
                         Type = attachment.Type,
                         Name = attachment.Name,
                         Size = attachment.Size,

@@ -6,16 +6,16 @@ namespace Chat.Domain.Entities.Attachments;
 [Table("Attachments")]
 public partial class Attachment : BaseEntity, ISoftDelete
 {
-    public Attachment(string content, string type, string name, int size, string uniqueId)
+    public Attachment(string fileId, string type, string name, int size, string uniqueId)
     {
-        Content = content;
+        FileId = fileId;
         Type = type;
         Name = name;
         Size = size;
         UniqueId = uniqueId;
     }
 
-    public string Content { get; private set; }
+    public string FileId { get; private set; }
     public string Type { get; private set; }
     public string UniqueId { get; private set; }
     public string Name { get; private set; }

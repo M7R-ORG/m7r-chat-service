@@ -2,14 +2,11 @@
 using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Shared.Constants.Common;
-using Chat.Persistence.Extensions;
 
 namespace Chat.Application.Services.ChatService.Adapters;
 
 public class ChannelServicePublicChannelAdapter : ChannelServicePublicChannelResponseData
 {
-    private readonly string? _imagePath;
-
     public ChannelServicePublicChannelAdapter(Channel channel, int authorId)
     {
         Id = channel.Id;
@@ -24,19 +21,14 @@ public class ChannelServicePublicChannelAdapter : ChannelServicePublicChannelRes
 
             if (chatPartner != null)
             {
-                _imagePath = chatPartner.Image;
+                ImageId = chatPartner.Image;
                 Name = chatPartner.Login;
             }
         }
         else
         {
-            _imagePath = channel.Image;
+            ImageId = channel.Image;
             Name = channel.Name;
         }
-    }
-
-    public async Task LoadImageAsync()
-    {
-        Image = await FileManager.ReadToBytesAsync(_imagePath);
     }
 }

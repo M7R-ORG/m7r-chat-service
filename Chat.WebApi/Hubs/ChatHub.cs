@@ -94,7 +94,7 @@ public class ChatHub(IChatService chatService, IChannelService channelService) :
             {
                 UniqueId = request.UniqueId,
                 Type = request.Type,
-                Content = request.Content,
+                FileId = request.FileId,
                 Name = request.Name,
                 Size = request.Size,
                 ChannelId = request.ChannelId

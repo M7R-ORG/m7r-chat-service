@@ -158,7 +158,13 @@ public class ChatService : BaseService, IChatService
         ChatServiceUploadAttachmentRequest request
     )
     {
-        Attachment attachment = await ProcessAttachment.CreateFileAsync(request, _appSettings);
+        var attachment = new Attachment(
+            request.FileId,
+            request.Type,
+            request.Name,
+            request.Size,
+            request.UniqueId
+        );
 
         attachment.SetChannel(request.ChannelId);
         attachment.SetOwner(AccountId);
@@ -181,12 +187,10 @@ public class ChatService : BaseService, IChatService
         if (attachment.OwnerId != AccountId && !accounts.Any(account => account.Id == AccountId))
             throw new OperationNotAllowedException();
 
-        byte[] contentBytes = await FileManager.ReadToBytesAsync(attachment.Content) ?? [];
-
         return new ChatServiceLoadAttachmentResponse()
         {
             Id = attachment.Id,
-            Content = contentBytes,
+            FileId = attachment.FileId,
             Type = attachment.Type,
             Name = attachment.Name,
             Size = attachment.Size
@@ -201,7 +205,6 @@ public class ChatService : BaseService, IChatService
             await _attachmentBS.GetAttachmentByUniqueIdAsync(request.UniqueId)
             ?? throw new NotExistsException("Attachment not found");
 
-        ProcessAttachment.RemoveFile(attachment);
         await _attachmentBS.RemoveAttachmentAsync(attachment);
 
         return new ChatServiceRemoveAttachmentResponse() { AttachmentId = attachment.Id };

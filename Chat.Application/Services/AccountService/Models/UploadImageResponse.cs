@@ -2,5 +2,5 @@
 
 public class AccountServiceUploadImageResponse
 {
-    public required string Image { get; set; }
+    public required string ImageId { get; set; }
 }

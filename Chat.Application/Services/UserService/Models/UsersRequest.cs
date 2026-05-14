@@ -5,5 +5,4 @@ namespace Chat.Application.Services.UserService.Models;
 public class UserServiceUsersRequest
 {
     public Pagination? Pagination { get; set; }
-    public bool IsLoadImage { get; set; }
 }
