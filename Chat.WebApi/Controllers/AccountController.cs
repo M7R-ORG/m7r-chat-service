@@ -31,7 +31,7 @@ public class AccountController : ControllerBase
     )
     {
         AccountServiceUploadImageResponse response = await _accountService.UploadImageAsync(
-            new AccountServiceUploadImageRequest() { Image = request.Image }
+            new AccountServiceUploadImageRequest() { FileId = request.FileId }
         );
 
         return Ok(response);
