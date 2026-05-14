@@ -1,4 +1,4 @@
-using Chat.Domain.Entities;
+﻿using Chat.Domain.Entities;
 
 namespace Chat.Domain.Shared.Models;
 

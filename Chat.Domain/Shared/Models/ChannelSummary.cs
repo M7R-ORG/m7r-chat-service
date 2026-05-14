@@ -1,4 +1,4 @@
-namespace Chat.Domain.Shared.Models;
+﻿namespace Chat.Domain.Shared.Models;
 
 public class ChannelSummary
 {

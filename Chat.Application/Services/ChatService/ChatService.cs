@@ -1,5 +1,4 @@
 ﻿using Chat.Application.Services.ChatService.Adapters;
-using Chat.Application.Services.ChatService.Extensions;
 using Chat.Application.Services.ChatService.Models;
 using Chat.Application.Services.Common;
 using Chat.Domain.Common;
@@ -13,7 +12,6 @@ using Chat.Domain.Shared.Constants.Common;
 using Chat.Domain.Shared.Models;
 using Chat.Infrastructure.Services.AIService;
 using Chat.Infrastructure.Services.AIService.Models;
-using Chat.Persistence.Extensions;
 using Microsoft.AspNetCore.Http;
 
 namespace Chat.Application.Services.ChatService;
