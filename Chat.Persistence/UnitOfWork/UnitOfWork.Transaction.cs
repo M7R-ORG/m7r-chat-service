@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using Chat.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

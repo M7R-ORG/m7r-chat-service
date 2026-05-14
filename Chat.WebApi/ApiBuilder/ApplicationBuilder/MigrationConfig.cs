@@ -1,4 +1,4 @@
-using Chat.Persistence.DBContext;
+﻿using Chat.Persistence.DBContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chat.WebApi.ApiBuilder.ApplicationBuilder;

@@ -1,5 +1,4 @@
 ﻿using Chat.Domain.Common;
-using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Accounts.AIBots;
 using Chat.Domain.Entities.Attachments;
 using Chat.Domain.Entities.Channels;
