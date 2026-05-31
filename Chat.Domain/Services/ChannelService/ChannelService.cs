@@ -178,7 +178,7 @@ public class ChannelBS : DomainService
             ?? throw new NotExistsException("Account not found");
 
         Channel channel =
-            await _unitOfWork.Channel.GetAsync(new ChannelByIdSpec(channelId))
+            await _unitOfWork.Channel.GetAsync(new ChannelByIdWithAccountsSpec(channelId))
             ?? throw new NotExistsException("Channel not found");
 
         if (channel.Type != ChannelType.Public || channel.Accounts.Contains(account))

@@ -37,7 +37,7 @@ public class AccountsSpec : Specification<Account>
             (account) =>
                 account.Id != accountId
                 && account.Role != AccountRole.AIBot
-                && (searchField == null || account.Login.Contains(searchField))
+                && (searchField == null || account.Login.ToLower().Contains(searchField.ToLower()))
         )
     {
         ApplyOrderBy(account => account.Id);

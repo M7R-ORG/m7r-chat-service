@@ -11,7 +11,8 @@ public class PublicChannelsSpec : Specification<Channel>
                 channel.Type == ChannelType.Public
                 && (
                     searchField == null
-                    || channel.Name != null && channel.Name.Contains(searchField)
+                    || channel.Name != null
+                        && channel.Name.ToLower().Contains(searchField.ToLower())
                 )
         )
     {
@@ -75,4 +76,14 @@ public class ChannelByIdSpec : Specification<Channel>
 {
     public ChannelByIdSpec(int? id)
         : base((channel) => channel.Id == id) { }
+}
+
+public class ChannelByIdWithAccountsSpec : Specification<Channel>
+{
+    public ChannelByIdWithAccountsSpec(int id)
+        : base((channel) => channel.Id == id)
+    {
+        AddInclude(channel => channel.Accounts);
+        ApplyTracking();
+    }
 }
