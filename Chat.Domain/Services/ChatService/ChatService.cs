@@ -25,11 +25,15 @@ public class ChatBS : DomainService
         return messages;
     }
 
-    public async Task<IEnumerable<Message>> MessagesAsync(int channelId, string? searchField)
+    public async Task<IEnumerable<Message>> MessagesAsync(
+        int accountId,
+        int channelId,
+        string? searchField
+    )
     {
         IEnumerable<Message>? messages = await _unitOfWork
             .Message
-            .GetAllAsync(new MessagesSpec(channelId, searchField));
+            .GetAllAsync(new MessagesSpec(accountId, channelId, searchField));
 
         if (messages == null)
             throw new NotExistsException("Messages not exists");
@@ -38,15 +42,15 @@ public class ChatBS : DomainService
     }
 
     public async Task<PaginatorResponse<Message>> MessagesPaginatedAsync(
+        int accountId,
         int channelId,
         string? searchField,
         Pagination? pagination
     )
     {
-        return await _unitOfWork.Message.GetPaginatedAsync(
-            new MessagesSpec(channelId, searchField),
-            pagination
-        );
+        return await _unitOfWork
+            .Message
+            .GetPaginatedAsync(new MessagesSpec(accountId, channelId, searchField), pagination);
     }
 
     public async Task<Message> MessageAsync(int channelId, int messageId)
@@ -61,17 +65,11 @@ public class ChatBS : DomainService
         return message;
     }
 
-    public async Task<List<int>> ReadMessagesAsync(
-        int channelId,
-        int lastMessageId,
-        int accountId
-    )
+    public async Task<List<int>> ReadMessagesAsync(int channelId, int lastMessageId, int accountId)
     {
-        return await _unitOfWork.Message.BatchReadMessagesAsync(
-            channelId,
-            lastMessageId,
-            accountId
-        );
+        return await _unitOfWork
+            .Message
+            .BatchReadMessagesAsync(channelId, lastMessageId, accountId);
     }
 
     public async Task<Message> AddMessageAsync(
@@ -86,7 +84,7 @@ public class ChatBS : DomainService
 
         IEnumerable<Attachment> attachments = await _unitOfWork
             .Attachment
-            .GetAllAsync(new AttachmentsByUniqueIdsSpec(attachmentIds));
+            .GetAllAsync(new AttachmentsByUniqueIdsSpec(attachmentIds, authorId, channelId));
 
         message.AddAttachments(attachments.ToList());
         message.SetParentMessageId(originalMessageId);
@@ -115,14 +113,18 @@ public class ChatBS : DomainService
         return aiBot.Id;
     }
 
-    public async Task<int?> GetAIProfileIdByChannelIdAsync(int channelId)
+    public async Task<ChannelAISettings> GetAISettingsByChannelIdAsync(int channelId)
     {
         Channel? channel = await _unitOfWork.Channel.GetAsync(new ChannelByIdSpec(channelId));
 
         if (channel == null)
             throw new NotExistsException("Channel not exists");
 
-        return channel.AIProfileId;
+        return new ChannelAISettings()
+        {
+            ProfileId = channel.AIProfileId,
+            OwnerId = channel.OwnerId
+        };
     }
 
     public async Task<IEnumerable<string>> GetUserIdsByChannelIdAsync(int accountId, int channelId)

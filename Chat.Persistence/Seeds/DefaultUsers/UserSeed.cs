@@ -1,5 +1,5 @@
 ﻿using Chat.Domain.Entities.Accounts.Users;
-using Chat.Domain.Services.AuthService;
+using Chat.Domain.Security;
 using Chat.Domain.Shared.Models;
 using Chat.Persistence.DBContext;
 
@@ -23,7 +23,7 @@ internal static partial class DefaultUsersSeed
 
             IEnumerable<User> userList = users.Select(user =>
             {
-                Password password = AuthBS.CreatePasswordHash(user.Password);
+                Password password = PasswordHasher.Create(user.Password);
 
                 return new User(user.Email, user.Login, password.Hash, password.Salt)
                 {

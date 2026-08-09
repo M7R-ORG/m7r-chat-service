@@ -19,6 +19,7 @@ public class AIIS : BaseIService, IAIIS
             {
                 request.OriginalMessageId,
                 request.ChannelId,
+                request.AccountId,
                 request.ProfileId,
                 request.Messages
             },

@@ -5,7 +5,7 @@ using Chat.Domain.Entities.Messages;
 using Chat.Domain.Shared.Constants.Common;
 using Chat.Domain.Shared.Models;
 
-namespace Chat.Application.Services.ChatService.Adapters;
+namespace Chat.Application.Services.ChannelService.Adapters;
 
 public class ChannelServiceAccountChannelListAdapter : ChannelServiceAccountChannelResponseData
 {

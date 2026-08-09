@@ -74,8 +74,17 @@ public class AccountDirectChannelSpec : Specification<Channel>
 
 public class ChannelByIdSpec : Specification<Channel>
 {
-    public ChannelByIdSpec(int? id)
+    public ChannelByIdSpec(int id)
         : base((channel) => channel.Id == id) { }
+}
+
+public class AccountChannelByIdSpec : Specification<Channel>
+{
+    public AccountChannelByIdSpec(int accountId, int channelId)
+        : base(
+            (channel) =>
+                channel.Id == channelId && channel.Accounts.Any(account => account.Id == accountId)
+        ) { }
 }
 
 public class ChannelByIdWithAccountsSpec : Specification<Channel>

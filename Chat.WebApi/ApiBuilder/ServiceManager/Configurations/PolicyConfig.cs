@@ -14,10 +14,10 @@ public static class PolicyConfigExtension
     {
         authorizationOptions.AddPolicy(AuthPolicy.OnlyUser, policy => policy.RequireRole("User"));
         authorizationOptions.AddPolicy(AuthPolicy.OnlyAdmin, policy => policy.RequireRole("Admin"));
-        authorizationOptions.AddPolicy(
-            AuthPolicy.FullAccess,
-            policy => policy.RequireAssertion(context => true)
-        );
+
+        authorizationOptions.FallbackPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
     }
 
     public static void CorsConfig(this CorsOptions corsOptions, IConfiguration configuration)

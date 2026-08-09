@@ -3,7 +3,7 @@ using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Shared.Constants.Common;
 
-namespace Chat.Application.Services.ChatService.Adapters;
+namespace Chat.Application.Services.ChannelService.Adapters;
 
 public class ChannelServicePublicChannelAdapter : ChannelServicePublicChannelResponseData
 {

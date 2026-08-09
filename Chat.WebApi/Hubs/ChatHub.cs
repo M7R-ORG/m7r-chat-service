@@ -2,7 +2,6 @@
 using Chat.Application.Services.ChannelService.Models;
 using Chat.Application.Services.ChatService;
 using Chat.Application.Services.ChatService.Models;
-using Chat.WebApi.Controllers.Models.Chat;
 using Chat.WebApi.Hubs.Common;
 using Chat.WebApi.Hubs.Models.Chat;
 using Microsoft.AspNetCore.Authorization;

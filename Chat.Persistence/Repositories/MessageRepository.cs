@@ -23,11 +23,15 @@ public class MessageRepository : BaseRepository<Message>, IMessageRepository
     )
     {
         List<int> unreadMessageIds = await _dbSet
-            .Where(message =>
-                message.ChannelId == channelId
-                && message.Id <= lastMessageId
-                && message.ReadAccounts.All(account => account.Id != accountId)
-                && message.AuthorId != accountId)
+            .Where(
+                message =>
+                    message.ChannelId == channelId
+                    && message.Channel != null
+                    && message.Channel.Accounts.Any(account => account.Id == accountId)
+                    && message.Id <= lastMessageId
+                    && message.ReadAccounts.All(account => account.Id != accountId)
+                    && message.AuthorId != accountId
+            )
             .Select(message => message.Id)
             .ToListAsync();
 
@@ -36,14 +40,16 @@ public class MessageRepository : BaseRepository<Message>, IMessageRepository
 
         await _dbSet
             .Where(message => unreadMessageIds.Contains(message.Id))
-            .ExecuteUpdateAsync(setters =>
-                setters.SetProperty(m => m.IsRead, true));
+            .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.IsRead, true));
 
-        List<Dictionary<string, object>> joinEntries = [.. unreadMessageIds.Select(messageId => new Dictionary<string, object>
+        List<Dictionary<string, object>> joinEntries =
+        [
+            .. unreadMessageIds.Select(messageId => new Dictionary<string, object>
         {
             ["ReadMessagesId"] = messageId,
             ["ReadAccountsId"] = accountId
-        })];
+        })
+        ];
 
         _dbContext.Set<Dictionary<string, object>>("AccountMessage").AddRange(joinEntries);
 
@@ -62,25 +68,30 @@ public class MessageRepository : BaseRepository<Message>, IMessageRepository
         return await _dbSet
             .Where(message => channelIdList.Contains(message.ChannelId))
             .GroupBy(message => message.ChannelId)
-            .Select(group => new ChannelSummary
-            {
-                ChannelId = group.Key,
-                UnreadMessagesCount = group.Count(message =>
-                    message.AuthorId != accountId
-                    && message.ReadAccounts.All(account => account.Id != accountId)),
-                LastMessageText = group
-                    .OrderByDescending(message => message.CreatedAt)
-                    .Select(message => message.Text)
-                    .FirstOrDefault(),
-                LastMessageAuthor = group
-                    .OrderByDescending(message => message.CreatedAt)
-                    .Select(message => message.Author != null ? message.Author.Login : null)
-                    .FirstOrDefault(),
-                LastMessageAttachmentsCount = group
-                    .OrderByDescending(message => message.CreatedAt)
-                    .Select(message => message.Attachments.Count)
-                    .FirstOrDefault()
-            })
+            .Select(
+                group =>
+                    new ChannelSummary
+                    {
+                        ChannelId = group.Key,
+                        UnreadMessagesCount = group.Count(
+                            message =>
+                                message.AuthorId != accountId
+                                && message.ReadAccounts.All(account => account.Id != accountId)
+                        ),
+                        LastMessageText = group
+                            .OrderByDescending(message => message.CreatedAt)
+                            .Select(message => message.Text)
+                            .FirstOrDefault(),
+                        LastMessageAuthor = group
+                            .OrderByDescending(message => message.CreatedAt)
+                            .Select(message => message.Author != null ? message.Author.Login : null)
+                            .FirstOrDefault(),
+                        LastMessageAttachmentsCount = group
+                            .OrderByDescending(message => message.CreatedAt)
+                            .Select(message => message.Attachments.Count)
+                            .FirstOrDefault()
+                    }
+            )
             .ToDictionaryAsync(summary => summary.ChannelId);
     }
 }

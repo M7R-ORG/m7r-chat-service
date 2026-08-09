@@ -1,5 +1,5 @@
 ﻿using Chat.Domain.Entities.Accounts.AIBots;
-using Chat.Domain.Services.AuthService;
+using Chat.Domain.Security;
 using Chat.Domain.Shared.Models;
 using Chat.Persistence.DBContext;
 
@@ -23,7 +23,7 @@ internal static partial class DefaultUsersSeed
 
             IEnumerable<AIBot> aiBotList = aiBots.Select(bot =>
             {
-                Password password = AuthBS.CreatePasswordHash(bot.Password);
+                Password password = PasswordHasher.Create(bot.Password);
 
                 return new AIBot(bot.Email, bot.Login, password.Hash, password.Salt);
             });

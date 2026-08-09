@@ -4,10 +4,12 @@ namespace Chat.Domain.Entities.Messages;
 
 public class MessagesSpec : Specification<Message>
 {
-    public MessagesSpec(int channelId, string? searchField)
+    public MessagesSpec(int accountId, int channelId, string? searchField)
         : base(
             (message) =>
-                (message.ChannelId == channelId)
+                message.ChannelId == channelId
+                && message.Channel != null
+                && message.Channel.Accounts.Any(account => account.Id == accountId)
                 && (
                     searchField == null
                     || message.Text == null
