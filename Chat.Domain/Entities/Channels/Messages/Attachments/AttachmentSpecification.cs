@@ -5,10 +5,7 @@ namespace Chat.Domain.Entities.Attachments;
 public class AttachmentByUniqueIdSpec : Specification<Attachment>
 {
     public AttachmentByUniqueIdSpec(string uniqueId)
-        : base((attachment) => attachment.UniqueId == uniqueId)
-    {
-        AddInclude("Message.Channel.Accounts");
-    }
+        : base((attachment) => attachment.UniqueId == uniqueId) { }
 }
 
 public class AttachmentByIdSpec : Specification<Attachment>
@@ -22,8 +19,17 @@ public class AttachmentByIdSpec : Specification<Attachment>
 
 public class AttachmentsByUniqueIdsSpec : Specification<Attachment>
 {
-    public AttachmentsByUniqueIdsSpec(IEnumerable<string> attachmentUniqueIds)
-        : base((attachment) => attachmentUniqueIds.Contains(attachment.UniqueId)) { }
+    public AttachmentsByUniqueIdsSpec(
+        IEnumerable<string> attachmentUniqueIds,
+        int ownerId,
+        int channelId
+    )
+        : base(
+            (attachment) =>
+                attachmentUniqueIds.Contains(attachment.UniqueId)
+                && attachment.OwnerId == ownerId
+                && attachment.ChannelId == channelId
+        ) { }
 }
 
 public class PreviewAttachmentsSpec : Specification<Attachment>
@@ -34,6 +40,5 @@ public class PreviewAttachmentsSpec : Specification<Attachment>
                 attachment.MessageId == null
                 && attachment.ChannelId == channelId
                 && attachment.OwnerId == ownerId
-        )
-    { }
+        ) { }
 }

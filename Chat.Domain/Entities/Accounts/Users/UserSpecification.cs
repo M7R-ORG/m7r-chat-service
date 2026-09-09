@@ -4,7 +4,7 @@ namespace Chat.Domain.Entities.Accounts.Users;
 
 public class UserByIdSpec : Specification<User>
 {
-    public UserByIdSpec(int? id, bool isTracking)
+    public UserByIdSpec(int id, bool isTracking)
         : base((user) => user.Id == id)
     {
         if (isTracking)

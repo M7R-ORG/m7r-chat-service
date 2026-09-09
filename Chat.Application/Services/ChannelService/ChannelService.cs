@@ -1,5 +1,5 @@
-﻿using Chat.Application.Services.ChannelService.Models;
-using Chat.Application.Services.ChatService.Adapters;
+﻿using Chat.Application.Services.ChannelService.Adapters;
+using Chat.Application.Services.ChannelService.Models;
 using Chat.Application.Services.Common;
 using Chat.Domain.Common;
 using Chat.Domain.Entities.Channels;
@@ -113,15 +113,20 @@ public class ChannelService : BaseService, IChannelService
         );
 
         IEnumerable<int> channelIds = paginatedData.Collection.Select(channel => channel.Id);
-        Dictionary<int, ChannelSummary> summaries = await _unitOfWork.Message.GetChannelSummariesAsync(channelIds, AccountId);
+        Dictionary<int, ChannelSummary> summaries = await _unitOfWork
+            .Message
+            .GetChannelSummariesAsync(channelIds, AccountId);
 
         var adaptedChannels = paginatedData
             .Collection
-            .Select(channel => new ChannelServiceAccountChannelListAdapter(
-                channel,
-                AccountId,
-                summaries.GetValueOrDefault(channel.Id)
-            ))
+            .Select(
+                channel =>
+                    new ChannelServiceAccountChannelListAdapter(
+                        channel,
+                        AccountId,
+                        summaries.GetValueOrDefault(channel.Id)
+                    )
+            )
             .ToList();
 
         return new ChannelServiceAccountChannelsResponse()
@@ -194,11 +199,14 @@ public class ChannelService : BaseService, IChannelService
 
         IEnumerable<ChannelServiceMemberImageResponseData> memberImages = channel
             .Accounts
-            .Select(account => new ChannelServiceMemberImageResponseData()
-            {
-                Id = account.Id,
-                ImageId = account.Image
-            });
+            .Select(
+                account =>
+                    new ChannelServiceMemberImageResponseData()
+                    {
+                        Id = account.Id,
+                        ImageId = account.Image
+                    }
+            );
 
         return new ChannelServiceMemberImagesResponse() { MemberImages = memberImages };
     }

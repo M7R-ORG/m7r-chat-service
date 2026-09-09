@@ -6,7 +6,6 @@ using Chat.Domain.Common;
 using Chat.Domain.Services;
 using Chat.Domain.Services.AccountService;
 using Chat.Domain.Services.AdminService;
-using Chat.Domain.Services.AuthService;
 using Chat.Domain.Services.ChannelService;
 using Chat.Domain.Services.ChatService;
 using Chat.Domain.Services.UserService;
@@ -38,7 +37,6 @@ public static partial class ServiceManagerExtension
 
         serviceCollection.AddScoped<UserBS>();
         serviceCollection.AddScoped<AccountBS>();
-        serviceCollection.AddScoped<AuthBS>();
         serviceCollection.AddScoped<AdminBS>();
         serviceCollection.AddScoped<ChannelBS>();
         serviceCollection.AddScoped<ChatBS>();

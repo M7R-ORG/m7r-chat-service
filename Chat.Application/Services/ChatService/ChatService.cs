@@ -40,6 +40,7 @@ public class ChatService : BaseService, IChatService
     public async Task<ChatServiceMessagesResponse> MessagesAsync(ChatServiceMessagesRequest request)
     {
         PaginatorResponse<Message> paginatedData = await _chatBS.MessagesPaginatedAsync(
+            AccountId,
             request.ChannelId,
             request.SearchField,
             request.Pagination
@@ -67,9 +68,11 @@ public class ChatService : BaseService, IChatService
             request.Attachments
         );
 
-        int? aiProfileId = await _chatBS.GetAIProfileIdByChannelIdAsync(request.ChannelId);
+        ChannelAISettings aiSettings = await _chatBS.GetAISettingsByChannelIdAsync(
+            request.ChannelId
+        );
 
-        if (aiProfileId != null && Role != AccountRole.AIBot)
+        if (aiSettings.ProfileId != null && Role != AccountRole.AIBot)
         {
             IEnumerable<Message> messages = await _chatBS.MessagesForAIAsync(request.ChannelId);
 
@@ -78,7 +81,8 @@ public class ChatService : BaseService, IChatService
                 {
                     OriginalMessageId = message.Id,
                     ChannelId = request.ChannelId,
-                    ProfileId = aiProfileId.Value,
+                    AccountId = aiSettings.OwnerId,
+                    ProfileId = aiSettings.ProfileId.Value,
                     Messages = messages.AdaptForAI()
                 }
             );
@@ -161,11 +165,10 @@ public class ChatService : BaseService, IChatService
             request.Type,
             request.Name,
             request.Size,
-            request.UniqueId
+            request.UniqueId,
+            request.ChannelId,
+            AccountId
         );
-
-        attachment.SetChannel(request.ChannelId);
-        attachment.SetOwner(AccountId);
 
         await _attachmentBS.CreateAttachmentAsync(attachment);
 
@@ -180,7 +183,11 @@ public class ChatService : BaseService, IChatService
             await _attachmentBS.GetAttachmentByIdAsync(request.AttachmentId)
             ?? throw new NotExistsException("Attachment not found");
 
-        ICollection<Account>? accounts = attachment.Message?.Channel?.Accounts ?? [];
+        ICollection<Account> accounts =
+            attachment.Message?.Channel?.Accounts
+            ?? throw new SomethingWentWrongException(
+                "Attachment loaded without Message.Channel.Accounts"
+            );
 
         if (attachment.OwnerId != AccountId && !accounts.Any(account => account.Id == AccountId))
             throw new OperationNotAllowedException();
@@ -202,6 +209,9 @@ public class ChatService : BaseService, IChatService
         Attachment? attachment =
             await _attachmentBS.GetAttachmentByUniqueIdAsync(request.UniqueId)
             ?? throw new NotExistsException("Attachment not found");
+
+        if (attachment.OwnerId != AccountId)
+            throw new OperationNotAllowedException();
 
         await _attachmentBS.RemoveAttachmentAsync(attachment);
 

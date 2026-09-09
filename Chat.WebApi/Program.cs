@@ -24,6 +24,7 @@ WebApplication application = builder.Build();
 application.ApplyMigrations();
 application.AddEnvironmentConfiguration();
 application.CommonConfiguration();
+application.HealthConfiguration();
 application.HubsConfiguration();
 application.SeedsConfiguration();
 

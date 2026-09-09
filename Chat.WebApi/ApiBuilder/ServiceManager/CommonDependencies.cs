@@ -21,6 +21,7 @@ public static partial class ServiceManagerExtension
 
         serviceCollection.AddOptions();
         serviceCollection.AddDbContext<EFContext>(options => options.UseNpgsql(dbConnection));
+        serviceCollection.AddHealthChecks();
         serviceCollection.AddControllers();
         serviceCollection.AddEndpointsApiExplorer();
         serviceCollection.AddHttpContextAccessor();

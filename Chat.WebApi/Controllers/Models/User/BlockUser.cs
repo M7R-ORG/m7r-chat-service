@@ -1,4 +1,4 @@
-﻿namespace Chat.WebApi.Controllers.Models.Admin;
+﻿namespace Chat.WebApi.Controllers.Models.User;
 
 public class UserControllerBlockUserRequest
 {

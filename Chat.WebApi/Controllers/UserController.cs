@@ -3,7 +3,6 @@ using Chat.Application.Services.UserService.Models;
 using Chat.Domain.Shared.Constants.Common;
 using Chat.Infrastructure.Services.AuthService;
 using Chat.Infrastructure.Services.AuthService.Models;
-using Chat.WebApi.Controllers.Models.Admin;
 using Chat.WebApi.Controllers.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +22,7 @@ public class UserController : ControllerBase
         _authIS = authIS;
     }
 
-    [HttpPost("registration")]
+    [HttpPost("registration"), AllowAnonymous]
     public async Task<IActionResult> Registration(
         [FromBody] UserControllerRegistrationRequest request
     )
@@ -41,7 +40,7 @@ public class UserController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost("confirmation")]
+    [HttpPost("confirmation"), AllowAnonymous]
     public async Task<IActionResult> Confirmation(
         [FromBody] UserControllerConfirmationRequest request
     )

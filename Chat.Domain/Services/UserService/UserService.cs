@@ -1,7 +1,7 @@
 ﻿using Chat.Domain.Common;
 using Chat.Domain.Entities.Accounts.Users;
 using Chat.Domain.Exceptions;
-using Chat.Domain.Services.AuthService;
+using Chat.Domain.Security;
 using Chat.Domain.Shared.Models;
 using Chat.Domain.Specification;
 
@@ -24,10 +24,7 @@ public class UserBS : DomainService
 
     public async Task<PaginatorResponse<User>> GetUsersPaginatedAsync(Pagination? pagination)
     {
-        return await _unitOfWork.User.GetPaginatedAsync(
-            new DefaultSpec<User>(),
-            pagination
-        );
+        return await _unitOfWork.User.GetPaginatedAsync(new DefaultSpec<User>(), pagination);
     }
 
     public async Task CheckExistenceByEmailAsync(string email)
@@ -64,7 +61,7 @@ public class UserBS : DomainService
         if (await _unitOfWork.Account.AnyAsync(account => account.Email == confirmation.Email))
             throw new AlreadyExistsException("Account already exists");
 
-        Password password = AuthBS.CreatePasswordHash(confirmation.Password);
+        Password password = PasswordHasher.Create(confirmation.Password);
 
         var user = new User(confirmation.Email, confirmation.Login, password.Hash, password.Salt)
         {

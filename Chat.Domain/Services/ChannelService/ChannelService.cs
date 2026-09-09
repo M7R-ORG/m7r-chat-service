@@ -53,7 +53,7 @@ public class ChannelBS : DomainService
         if (isExistsSameDirectChannel)
             throw new AlreadyExistsException("This channel already exists");
 
-        var channel = new Channel(ChannelType.Direct) { Name = name };
+        var channel = new Channel(ChannelType.Direct, firstAccountId) { Name = name };
 
         channel.SetAIProfileId(aiProfileId);
 
@@ -95,10 +95,9 @@ public class ChannelBS : DomainService
         if (isExistsSameChannel)
             throw new AlreadyExistsException("This channel name already exists");
 
-        var channel = new Channel(ChannelType.Private) { Name = channelName };
+        var channel = new Channel(ChannelType.Private, accountId) { Name = channelName };
 
         channel.SetAIProfileId(aiProfileId);
-        channel.SetOwner(accountId);
         channel.AddAccount(myAccount);
 
         IEnumerable<Account> accounts = await _unitOfWork
@@ -142,10 +141,9 @@ public class ChannelBS : DomainService
         if (isExistsSameChannel)
             throw new AlreadyExistsException("This channel name already exists");
 
-        var channel = new Channel(ChannelType.Public) { Name = channelName };
+        var channel = new Channel(ChannelType.Public, accountId) { Name = channelName };
 
         channel.SetAIProfileId(aiProfileId);
-        channel.SetOwner(accountId);
         channel.AddAccount(myAccount);
 
         IEnumerable<Account> accounts = await _unitOfWork
@@ -205,10 +203,9 @@ public class ChannelBS : DomainService
         Pagination? pagination
     )
     {
-        return await _unitOfWork.Channel.GetPaginatedAsync(
-            new PublicChannelsSpec(searchField),
-            pagination
-        );
+        return await _unitOfWork
+            .Channel
+            .GetPaginatedAsync(new PublicChannelsSpec(searchField), pagination);
     }
 
     public async Task<IEnumerable<Channel>> AccountChannelsAsync(
@@ -234,10 +231,12 @@ public class ChannelBS : DomainService
         Pagination? pagination
     )
     {
-        return await _unitOfWork.Channel.GetPaginatedAsync(
-            new AccountChannelsSpec(accountId, searchField, channelType),
-            pagination
-        );
+        return await _unitOfWork
+            .Channel
+            .GetPaginatedAsync(
+                new AccountChannelsSpec(accountId, searchField, channelType),
+                pagination
+            );
     }
 
     public async Task<Channel> AccountChannelAsync(int accountId, int channelId)

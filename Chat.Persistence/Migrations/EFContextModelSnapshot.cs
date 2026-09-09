@@ -129,8 +129,7 @@ namespace Chat.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ChannelId")
-                        .IsRequired()
+                    b.Property<int>("ChannelId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
@@ -150,7 +149,7 @@ namespace Chat.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("OwnerId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Size")
@@ -212,7 +211,7 @@ namespace Chat.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int?>("OwnerId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Type")
@@ -394,7 +393,9 @@ namespace Chat.Persistence.Migrations
                 {
                     b.HasOne("Chat.Domain.Entities.Accounts.Account", "Owner")
                         .WithMany("OwnedChannels")
-                        .HasForeignKey("OwnerId");
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Owner");
                 });

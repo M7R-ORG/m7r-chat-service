@@ -1,6 +1,7 @@
 ﻿using Chat.Domain.Exceptions;
 using Chat.Domain.Exceptions.Common;
 using Chat.WebApi.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace Chat.WebApi.Controllers;
 
 [ApiController]
 [ApiExplorerSettings(IgnoreApi = true)]
+[AllowAnonymous]
 public class ErrorController : ControllerBase
 {
     private IActionResult HandleError(string envName)
