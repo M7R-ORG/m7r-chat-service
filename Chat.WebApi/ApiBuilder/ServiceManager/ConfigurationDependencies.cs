@@ -15,6 +15,7 @@ public static partial class ServiceManagerExtension
         serviceCollection.Configure<RoutePathSettings>(config.GetSection(RoutePathSettings.Path));
         serviceCollection.Configure<FilePathSettings>(config.GetSection(FilePathSettings.Path));
         serviceCollection.Configure<RMQSettings>(config.GetSection(RMQSettings.Path));
+        serviceCollection.Configure<SeedSettings>(config.GetSection(SeedSettings.Path));
 
         return serviceCollection;
     }

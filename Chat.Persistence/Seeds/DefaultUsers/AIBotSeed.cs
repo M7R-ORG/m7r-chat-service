@@ -7,23 +7,15 @@ namespace Chat.Persistence.Seeds.DefaultUsers;
 
 internal static partial class DefaultUsersSeed
 {
-    public static void CreateAIBots(EFContext eFContext)
+    public static void CreateAIBots(EFContext eFContext, string aiBotPassword)
     {
         if (!eFContext.AIBots.Any())
         {
-            var aiBots = new[]
-            {
-                new
-                {
-                    Email = "ai.bot@bot.com",
-                    Login = "AIBot",
-                    Password = "Sosnova61S"
-                }
-            };
+            var aiBots = new[] { new { Email = "ai.bot@bot.com", Login = "AIBot" } };
 
             IEnumerable<AIBot> aiBotList = aiBots.Select(bot =>
             {
-                Password password = PasswordHasher.Create(bot.Password);
+                Password password = PasswordHasher.Create(aiBotPassword);
 
                 return new AIBot(bot.Email, bot.Login, password.Hash, password.Salt);
             });

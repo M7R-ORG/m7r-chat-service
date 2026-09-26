@@ -10,4 +10,5 @@ public interface IAppSettings
     ClientSettings Client { get; }
     AuthSettings Auth { get; }
     RMQSettings RMQ { get; }
+    SeedSettings Seed { get; }
 }

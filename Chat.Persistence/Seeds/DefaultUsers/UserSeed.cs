@@ -7,23 +7,15 @@ namespace Chat.Persistence.Seeds.DefaultUsers;
 
 internal static partial class DefaultUsersSeed
 {
-    public static void CreateUsers(EFContext eFContext)
+    public static void CreateUsers(EFContext eFContext, string userPassword)
     {
         if (!eFContext.Users.Any())
         {
-            var users = new[]
-            {
-                new
-                {
-                    Email = "user@user.com",
-                    Login = "User",
-                    Password = "Sosnova61S"
-                }
-            };
+            var users = new[] { new { Email = "user@user.com", Login = "User" } };
 
             IEnumerable<User> userList = users.Select(user =>
             {
-                Password password = PasswordHasher.Create(user.Password);
+                Password password = PasswordHasher.Create(userPassword);
 
                 return new User(user.Email, user.Login, password.Hash, password.Salt)
                 {

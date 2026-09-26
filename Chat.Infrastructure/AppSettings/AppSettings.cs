@@ -12,7 +12,8 @@ public class AppSettings(
     IOptions<FilePathSettings> filePathSettings,
     IOptions<ClientSettings> clientSettings,
     IOptions<AuthSettings> authSettings,
-    IOptions<RMQSettings> rmqSettings
+    IOptions<RMQSettings> rmqSettings,
+    IOptions<SeedSettings> seedSettings
 ) : IAppSettings
 {
     public CommonSettings Common { get; } = commonSettings.Value;
@@ -21,6 +22,7 @@ public class AppSettings(
     public ClientSettings Client { get; } = clientSettings.Value;
     public AuthSettings Auth { get; } = authSettings.Value;
     public RMQSettings RMQ { get; } = rmqSettings.Value;
+    public SeedSettings Seed { get; } = seedSettings.Value;
 
     public static TSection GetSection<TSection>(IConfiguration configuration)
         where TSection : ISettings

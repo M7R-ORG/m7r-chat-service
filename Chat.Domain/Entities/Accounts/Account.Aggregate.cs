@@ -10,6 +10,11 @@ public partial class Account : IAggregateRoot
         Login = login;
     }
 
+    public void UpdateEmail(string email)
+    {
+        Email = email;
+    }
+
     public void UpdateActivityStatus(string activityStatus)
     {
         ActivityStatus = activityStatus;
