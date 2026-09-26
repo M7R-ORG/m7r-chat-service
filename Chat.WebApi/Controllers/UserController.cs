@@ -90,6 +90,42 @@ public class UserController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPost("users"), Authorize(Policy = AuthPolicy.OnlyAdmin)]
+    public async Task<IActionResult> CreateUser([FromBody] UserControllerRegistrationRequest request)
+    {
+        UserServiceCreateUserResponse response = await _userService.CreateUserAsync(
+            new UserServiceCreateUserRequest()
+            {
+                Login = request.Login,
+                Email = request.Email,
+                Password = request.Password,
+                Birthday = request.Birthday,
+            }
+        );
+
+        return Ok(response);
+    }
+
+    [HttpPut("users/{id:int}"), Authorize(Policy = AuthPolicy.OnlyAdmin)]
+    public async Task<IActionResult> UpdateUser(
+        [FromRoute] int id,
+        [FromBody] UserControllerUpdateUserRequest request
+    )
+    {
+        UserServiceUpdateUserResponse response = await _userService.UpdateUserAsync(
+            new UserServiceUpdateUserRequest()
+            {
+                UserId = id,
+                Login = request.Login,
+                Email = request.Email,
+                Password = request.Password,
+                Birthday = request.Birthday,
+            }
+        );
+
+        return Ok(response);
+    }
+
     [HttpDelete("users/{id:int}"), Authorize(Policy = AuthPolicy.OnlyAdmin)]
     public async Task<IActionResult> RemoveUser([FromRoute] int id)
     {

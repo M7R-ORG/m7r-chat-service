@@ -10,6 +10,8 @@ public interface IUserService : IBaseService
     Task<UserServiceUpdateResponse> UpdateAsync(UserServiceUpdateRequest request);
     Task<UserServiceUsersResponse> UsersAsync(UserServiceUsersRequest request);
     Task<UserServiceUserResponse> UserAsync(UserServiceUserRequest request);
+    Task<UserServiceCreateUserResponse> CreateUserAsync(UserServiceCreateUserRequest request);
+    Task<UserServiceUpdateUserResponse> UpdateUserAsync(UserServiceUpdateUserRequest request);
     Task<UserServiceRemoveUserResponse> RemoveUserAsync(UserServiceRemoveUserRequest request);
     Task<UserServiceBlockUserResponse> BlockUserAsync(UserServiceBlockUserRequest request);
     Task<UserServiceUnblockUserResponse> UnblockUserAsync(UserServiceUnblockUserRequest request);

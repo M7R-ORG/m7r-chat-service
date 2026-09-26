@@ -72,6 +72,50 @@ public class UserBS : DomainService
         await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task CreateAsync(
+        string email,
+        string login,
+        string rawPassword,
+        DateOnly? birthday
+    )
+    {
+        if (await _unitOfWork.Account.AnyAsync(account => account.Email == email))
+            throw new AlreadyExistsException("Account already exists");
+
+        Password password = PasswordHasher.Create(rawPassword);
+
+        var user = new User(email, login, password.Hash, password.Salt) { Birthday = birthday };
+
+        await _unitOfWork.User.AddAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task AdminUpdateAsync(
+        User user,
+        string email,
+        string login,
+        DateOnly? birthday,
+        string? rawPassword
+    )
+    {
+        if (user.Email != email)
+        {
+            await CheckExistenceByEmailAsync(email);
+            user.UpdateEmail(email);
+        }
+
+        if (!string.IsNullOrEmpty(rawPassword))
+        {
+            Password password = PasswordHasher.Create(rawPassword);
+            user.UpdatePassword(password.Hash, password.Salt);
+        }
+
+        user.UpdateLogin(login);
+        user.UpdateBirthday(birthday);
+
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     public async Task UpdateAsync(User user, string login, DateOnly? birthday)
     {
         user.UpdateLogin(login);

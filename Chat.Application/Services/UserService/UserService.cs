@@ -98,6 +98,34 @@ public class UserService : BaseService, IUserService
         };
     }
 
+    public async Task<UserServiceCreateUserResponse> CreateUserAsync(
+        UserServiceCreateUserRequest request
+    )
+    {
+        await _userBS.CreateAsync(request.Email, request.Login, request.Password, request.Birthday);
+
+        return new UserServiceCreateUserResponse() { IsSuccess = true };
+    }
+
+    public async Task<UserServiceUpdateUserResponse> UpdateUserAsync(
+        UserServiceUpdateUserRequest request
+    )
+    {
+        User user =
+            await _userBS.GetUserByIdAsync(request.UserId, true)
+            ?? throw new NotExistsException("User not found");
+
+        await _userBS.AdminUpdateAsync(
+            user,
+            request.Email,
+            request.Login,
+            request.Birthday,
+            request.Password
+        );
+
+        return new UserServiceUpdateUserResponse() { IsSuccess = true };
+    }
+
     public async Task<UserServiceUpdateResponse> UpdateAsync(UserServiceUpdateRequest request)
     {
         User user =
